@@ -30,19 +30,21 @@ public class ProductService {
         return repository.findById(id).orElseThrow(() -> new Exception("Product not found"));
     }
 
-    public ProductModel createProduct(ProductModel product, MultipartFile file) throws Exception {
+    public ProductModel createProduct(String name, String description, Integer price, MultipartFile file)
+            throws Exception {
         String imageName = StringUtils.cleanPath(file.getOriginalFilename());
         String imageUrl = "";
+
         try {
             if (imageName.contains("..")) {
                 throw new Exception("Filename contains invalid path sequence " + imageName);
             }
-            product.setImageName(imageName);
-            product.setImageType(file.getContentType());
-            product.setData(file.getBytes());
-
+            System.out.println("BEFORE PRODUCT MODEL");
+            ProductModel product = new ProductModel(name, description, price, imageName, file.getContentType(),
+                    file.getBytes());
+            System.out.println("AFTER PRODUCT MODEL");
             imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/")
-                    .path(Long.toString(product.getId()))
+                    .path(product.getImageName())
                     .toUriString();
             product.setImageUrl(imageUrl);
 

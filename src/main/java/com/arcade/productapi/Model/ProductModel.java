@@ -33,13 +33,12 @@ public class ProductModel {
     }
 
     public ProductModel(String name, String description, Integer price, String imageName, String imageType,
-            String imageUrl, byte[] data) {
+            byte[] data) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageName = imageName;
         this.imageType = imageType;
-        this.imageUrl = imageUrl;
         this.data = data;
     }
 
