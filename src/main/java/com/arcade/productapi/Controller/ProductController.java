@@ -6,7 +6,11 @@ import java.util.Optional;
 import com.arcade.productapi.Model.ProductModel;
 import com.arcade.productapi.Service.ProductService;
 
+// import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+// import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,9 +41,15 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneProduct(@PathVariable Long id) {
-        Optional<ProductModel> product = productService.getOneProduct(id);
+    public ResponseEntity<ProductModel> getOneProduct(@PathVariable Long id) throws Exception {
+        ProductModel product = productService.getOneProduct(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws Exception {
+        ProductModel product = productService.getOneProduct(id);
+        return ResponseEntity.ok().body(new ByteArrayResource(product.getData()));
     }
 
     @PostMapping

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class ProductService {
@@ -25,12 +26,13 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Optional<ProductModel> getOneProduct(Long id) {
-        return repository.findById(id);
+    public ProductModel getOneProduct(Long id) throws Exception {
+        return repository.findById(id).orElseThrow(() -> new Exception("Product not found"));
     }
 
     public ProductModel createProduct(ProductModel product, MultipartFile file) throws Exception {
         String imageName = StringUtils.cleanPath(file.getOriginalFilename());
+        String imageUrl = "";
         try {
             if (imageName.contains("..")) {
                 throw new Exception("Filename contains invalid path sequence " + imageName);
@@ -38,6 +40,12 @@ public class ProductService {
             product.setImageName(imageName);
             product.setImageType(file.getContentType());
             product.setData(file.getBytes());
+
+            imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/")
+                    .path(Long.toString(product.getId()))
+                    .toUriString();
+            product.setImageUrl(imageUrl);
+
             return repository.save(product);
         } catch (Exception e) {
             throw new Exception("Could not save file " + imageName);
@@ -61,6 +69,12 @@ public class ProductService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/")
+                        .path(Long.toString(product.getId()))
+                        .toUriString();
+                product.setImageUrl(imageUrl);
+
                 return repository.save(product);
             });
         } catch (Exception e) {

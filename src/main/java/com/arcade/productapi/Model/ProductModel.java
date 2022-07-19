@@ -24,6 +24,7 @@ public class ProductModel {
     private Integer price;
     private String imageName;
     private String imageType;
+    private String imageUrl;
 
     @Lob
     private byte[] data;
@@ -32,13 +33,22 @@ public class ProductModel {
     }
 
     public ProductModel(String name, String description, Integer price, String imageName, String imageType,
-            byte[] data) {
+            String imageUrl, byte[] data) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageName = imageName;
         this.imageType = imageType;
+        this.imageUrl = imageUrl;
         this.data = data;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
